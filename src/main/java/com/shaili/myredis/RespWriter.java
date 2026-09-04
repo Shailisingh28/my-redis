@@ -9,7 +9,7 @@ public class RespWriter {
     public static void writeSimpleString(OutputStream out, String message) throws IOException {
         String response = "+" + message + "\r\n";
         out.write(response.getBytes(StandardCharsets.UTF_8));
-        out.flush();// steam se kho data turant bhej do
+        out.flush();// stream se kaho data turant bhej do
     }
 
     public static void writeBulkString(OutputStream out, String value) throws IOException {

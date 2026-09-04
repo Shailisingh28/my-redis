@@ -1,10 +1,8 @@
 package com.shaili.myredis;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Storage {
-    private final Map<String, String> data = new HashMap<>();
+
+    private final MyHashMap data = new MyHashMap();
 
     public void set(String key, String value) {
         data.put(key, value);
@@ -15,7 +13,6 @@ public class Storage {
     }
 
     public boolean delete(String key) {
-        return data.remove(key) != null;
+        return data.remove(key);
     }
-
 }
