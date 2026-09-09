@@ -73,6 +73,10 @@ public class RedisServer {
                 boolean deleted = storage.delete(key);
                 RespWriter.writeSimpleString(out, deleted ? "1" : "0");
             }
+            case "PING" -> RespWriter.writeSimpleString(out, "PONG");
+            case "COMMAND" -> RespWriter.writeSimpleString(out, "OK"); // redis-cli setup query, dummy response
+            case "HELLO" -> RespWriter.writeSimpleString(out, "OK"); // protocol handshake, abhi ke liye simplified
+
             default -> RespWriter.writeError(out, "unknown command '" + cmdName + "'");
         }
     }
