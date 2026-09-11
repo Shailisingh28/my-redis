@@ -22,7 +22,10 @@ public class RedisServer {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New client connected: " + clientSocket.getInetAddress());
-                handleClient(clientSocket);
+                Thread clientThread = new Thread(() -> handleClient(clientSocket));// naya thread banaya, usme
+                                                                                   // handleClient chala di, main thread
+                                                                                   // FREE hai
+                clientThread.start();
             }
 
         } catch (IOException e) {
