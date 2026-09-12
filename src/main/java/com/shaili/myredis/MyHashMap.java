@@ -33,7 +33,7 @@ public class MyHashMap {
         return getBucketIndex(key, buckets.length);
     }
 
-    public void put(String key, String value) {
+    public synchronized void put(String key, String value) {
         int index = getBucketIndex(key);
         Node head = buckets[index];
 
@@ -80,7 +80,7 @@ public class MyHashMap {
         }
     }
 
-    public String get(String key) {
+    public synchronized String get(String key) {
         int index = getBucketIndex(key);
         Node current = buckets[index];
 
@@ -94,7 +94,7 @@ public class MyHashMap {
         return null;
     }
 
-    public boolean remove(String key) {
+    public synchronized boolean remove(String key) {
         int index = getBucketIndex(key);
         Node current = buckets[index];
         Node previous = null;
