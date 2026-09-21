@@ -19,8 +19,8 @@ public class LRUCache {
 
     private final Map<String, DNode> map;
     private final int capacity;
-    private final DNode head; // dummy head, sabse recent yaha ke paas hoga
-    private final DNode tail; // dummy tail, sabse purana yaha ke paas hoga
+    private final DNode head;
+    private final DNode tail;
 
     public LRUCache(int capacity) {
         this.capacity = capacity;
@@ -56,6 +56,16 @@ public class LRUCache {
         DNode newNode = new DNode(key, value);
         map.put(key, newNode);
         addToFront(newNode);
+    }
+
+    public synchronized boolean remove(String key) {
+        DNode node = map.get(key);
+        if (node == null) {
+            return false;
+        }
+        removeNode(node);
+        map.remove(key);
+        return true;
     }
 
     private void moveToFront(DNode node) {

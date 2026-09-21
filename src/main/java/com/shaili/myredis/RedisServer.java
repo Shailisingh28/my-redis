@@ -11,7 +11,7 @@ import java.util.List;
 public class RedisServer {
 
     private static final int PORT = 6379;
-    private static final Storage storage = new Storage();
+    private static final Storage storage = new Storage(1000);
 
     public static void main(String[] args) {
         System.out.println("Starting MyRedis server on port " + PORT + "...");
