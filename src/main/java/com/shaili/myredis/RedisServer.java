@@ -64,6 +64,7 @@ public class RedisServer {
                 String key = command.get(1);
                 String value = command.get(2);
                 storage.set(key, value);
+                storage.saveToDisk();
                 RespWriter.writeSimpleString(out, "OK");
             }
             case "GET" -> {

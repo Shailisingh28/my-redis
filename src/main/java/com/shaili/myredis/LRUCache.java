@@ -92,6 +92,14 @@ public class LRUCache {
         map.remove(leastRecent.key);
     }
 
+    public synchronized Map<String, String> getAllEntries() {
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<String, DNode> entry : map.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().value);
+        }
+        return result;
+    }
+
     public int size() {
         return map.size();
     }
