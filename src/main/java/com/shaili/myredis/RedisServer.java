@@ -15,6 +15,7 @@ public class RedisServer {
 
     public static void main(String[] args) {
         System.out.println("Starting MyRedis server on port " + PORT + "...");
+        storage.loadFromDisk();
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is listening on port " + PORT);
@@ -84,4 +85,5 @@ public class RedisServer {
             default -> RespWriter.writeError(out, "unknown command '" + cmdName + "'");
         }
     }
+
 }
