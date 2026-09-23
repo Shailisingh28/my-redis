@@ -1,5 +1,8 @@
 package com.shaili.myredis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,27 +13,28 @@ import java.util.List;
 
 public class RedisServer {
 
+    private static final Logger logger = LoggerFactory.getLogger(RedisServer.class);
     private static final int PORT = 6379;
     private static final Storage storage = new Storage(1000);
 
     public static void main(String[] args) {
-        System.out.println("Starting MyRedis server on port " + PORT + "...");
+        logger.info("Starting MyRedis server on port {}...", PORT);
+
         storage.loadFromDisk();
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server is listening on port " + PORT);
+            logger.info("Server is listening on port {}", PORT);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("New client connected: " + clientSocket.getInetAddress());
-                Thread clientThread = new Thread(() -> handleClient(clientSocket));// naya thread banaya, usme
-                                                                                   // handleClient chala di, main thread
-                                                                                   // FREE hai
+                logger.info("New client connected: {}", clientSocket.getInetAddress());
+
+                Thread clientThread = new Thread(() -> handleClient(clientSocket));
                 clientThread.start();
             }
 
         } catch (IOException e) {
-            System.err.println("Server error: " + e.getMessage());
+            logger.error("Server error: {}", e.getMessage(), e);
         }
     }
 
@@ -44,16 +48,16 @@ public class RedisServer {
                 List<String> command = RespParser.parseCommand(reader);
 
                 if (command == null) {
-                    System.out.println("Client disconnected.");
+                    logger.info("Client disconnected: {}", clientSocket.getInetAddress());
                     break;
                 }
 
-                System.out.println("Received command: " + command);
+                logger.info("Received command from {}: {}", clientSocket.getInetAddress(), command);
                 processCommand(command, out);
             }
 
         } catch (IOException e) {
-            System.err.println("Error handling client: " + e.getMessage());
+            logger.error("Error handling client: {}", e.getMessage());
         }
     }
 
@@ -79,11 +83,12 @@ public class RedisServer {
                 RespWriter.writeSimpleString(out, deleted ? "1" : "0");
             }
             case "PING" -> RespWriter.writeSimpleString(out, "PONG");
-            case "COMMAND" -> RespWriter.writeSimpleString(out, "OK"); // redis-cli setup query, dummy response
-            case "HELLO" -> RespWriter.writeSimpleString(out, "OK"); // protocol handshake, abhi ke liye simplified
-
-            default -> RespWriter.writeError(out, "unknown command '" + cmdName + "'");
+            case "COMMAND" -> RespWriter.writeSimpleString(out, "OK");
+            case "HELLO" -> RespWriter.writeSimpleString(out, "OK");
+            default -> {
+                logger.warn("Unknown command received: {}", cmdName);
+                RespWriter.writeError(out, "unknown command '" + cmdName + "'");
+            }
         }
     }
-
 }
